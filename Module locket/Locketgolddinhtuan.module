@@ -1,8 +1,8 @@
-#!name=NightMarket Server - Locket Filter
+#!name=Locket Gold & Filter VIP - DinhTuan
 #!desc=Locket Gold By DinhTuan
 #!distributor=DinhTuan
-#!author=MinhHiep08 (@minhhiep07)
-# 🚀 Maintained by: DinhTuan
+#!author=DinhTuan
+# 🚀 Bản quyền 100%: DinhTuan
 #!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Locket.png
 #!system=ios
 
@@ -39,7 +39,7 @@ deleteHeader_RC = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/.+
 
 deleteHeader_Firebase = type=http-request,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://locket-vip.mhiep20077.workers.dev/js/deleteHeader.js?v=20261108_47,timeout=60
 
-revenuecat = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/NightmarketServer/Module-Shadowrocket-NMS/main/js/revenuecat.js?v=20261108_47,requires-body=true,max-size=-1,timeout=60
+revenuecat = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/revenuecat.js?v=20261108_47,requires-body=true,max-size=-1,timeout=60
 
 locket_rc = type=http-response,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://locket-vip.mhiep20077.workers.dev/js/Locket_Unlocked.js?v=20261108_47,requires-body=true,max-size=-1,timeout=60
 

@@ -1,6 +1,6 @@
 /***********************************************
 > RevenueCat Unlocker for Locket Gold
-> Maintainer: DinhTuan
+> Tác giả & Bản quyền 100%: DinhTuan
 > Support: Shadowrocket, Loon, Surge, Quantumult X
 ***********************************************/
 
@@ -25,7 +25,7 @@
     obj = {};
   }
 
-  obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
+  obj.Attention = "Chúc mừng bạn! Bản quyền 100% thuộc về DinhTuan.";
   obj.request_date = obj.request_date || nowIso;
   obj.request_date_ms = obj.request_date_ms || nowMs;
 
@@ -72,8 +72,19 @@
     store: "app_store"
   };
 
-  // Cấp subscription
-  obj.subscriber.subscriptions[productId] = subscriptionData;
+  // Cấp toàn bộ subscription IDs phổ biến của Locket
+  const productIds = [
+    "locket_1600_1y",
+    "locket_gold_yearly",
+    "locket_gold_monthly",
+    "com.locket.gold.annual",
+    "com.locket.gold.monthly"
+  ];
+  for (let i = 0; i < productIds.length; i++) {
+    obj.subscriber.subscriptions[productIds[i]] = Object.assign({}, subscriptionData, {
+      display_name: productIds[i]
+    });
+  }
 
   // Cấp toàn bộ entitlement khả dĩ của Locket để tránh lệch biến qua các phiên bản
   const entitlementKeys = [

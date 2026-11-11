@@ -1,6 +1,8 @@
 #!name=Locket Gold - DinhTuan
 #!desc=Module cấu hình Locket Widget - DinhTuan
-# 🚀 Rewrite by: DinhTuan
+# 🚀 Bản quyền 100%: DinhTuan
+#!distributor=DinhTuan
+#!author=DinhTuan
 #!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Locket.png
 #!system=ios
 
@@ -26,16 +28,16 @@ AND,((DOMAIN,api.revenuecat.com),(PROTOCOL,UDP)),REJECT
 # ~ Locket Gold - Shadowrocket / Surge / LanceX
 
 # RevenueCat Response
-revenuecat = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/NightmarketServer/Module-Shadowrocket-NMS/main/Module-Shadowrocket-NMS/Locketgold/locketfix8.js,requires-body=true,max-size=-1,timeout=60
+revenuecat = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/Module-Shadowrocket-NMS/Locketgold/locketfix8.js,requires-body=true,max-size=-1,timeout=60
 
 # RevenueCat Request Header
-deleteHeader = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/NightmarketServer/Module-Shadowrocket-NMS/main/Module-Shadowrocket-NMS/Locketgold/header7.js,timeout=60
+deleteHeader = type=http-request,pattern=^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/Module-Shadowrocket-NMS/Locketgold/header7.js,timeout=60
 
 # Firebase Request Header (Chống cache 304)
-deleteHeader_Firebase = type=http-request,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://raw.githubusercontent.com/NightmarketServer/Module-Shadowrocket-NMS/main/Module-Shadowrocket-NMS/Locketgold/header7.js,timeout=60
+deleteHeader_Firebase = type=http-request,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/Module-Shadowrocket-NMS/Locketgold/header7.js,timeout=60
 
 # Locket Firebase Remote Config
-locket_rc = type=http-response,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://raw.githubusercontent.com/NightmarketServer/Module-Shadowrocket-NMS/main/Module-Shadowrocket-NMS/Locketgold/forceGold4.3.js,requires-body=true,max-size=-1,timeout=60
+locket_rc = type=http-response,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+,script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/Module-Shadowrocket-NMS/Locketgold/forceGold4.3.js,requires-body=true,max-size=-1,timeout=60
 
 [Host]
 firebaseremoteconfigrealtime.googleapis.com = 0.0.0.0

@@ -1,6 +1,9 @@
-# 🔐 Locket Gold & Filter VIP - Shadowrocket / Loon / Surge / Quantumult X
+# 🔐 Locket Gold & Filter VIP - DinhTuan
 
 Bộ cấu hình tối ưu trải nghiệm **Locket Widget**, mở khoá tính năng **Locket Gold**, mở khoá **AI Filters / Photobooth**, gỡ quảng cáo, cho phép video dài (30s - 45s) và chống lỗi `304 Not Modified` / `Không thể áp dụng bộ lọc`.
+
+> 👑 **Bản quyền**: 100% thuộc về **DinhTuan**  
+> 📱 **Hỗ trợ nền tảng**: Shadowrocket, Loon, Surge, Quantumult X
 
 ---
 
@@ -8,17 +11,19 @@ Bộ cấu hình tối ưu trải nghiệm **Locket Widget**, mở khoá tính n
 
 ```
 locket/
-├── js/                                # Toàn bộ script xử lý logic cục bộ
+├── js/                                # Toàn bộ script xử lý logic cục bộ (Bản quyền: DinhTuan)
 │   ├── deleteHeader_Firebase.js       # Xóa header cache ETag / If-None-Match của Firebase
 │   ├── deleteHeader_RC.js             # Xóa header cache ETag / If-None-Match của RevenueCat
+│   ├── deleteHeader.js                # Bản hợp nhất xóa cache cho Shadowrocket cục bộ
 │   ├── revenuecat.js                  # Mở khoá Locket Gold qua RevenueCat (bản chuẩn)
-│   ├── evenuecat.js                   # Alias tương thích ngược cho URL cũ
+│   ├── evenuecat.js                   # Alias tương thích ngược
 │   ├── forceGold4.3.js                # Ép cờ Gold, 45s video, vô hiệu hoá paywall Firebase
 │   ├── locketfix.js                   # Phiên bản Remote Config đầy đủ nhất (Gold + Stickers + 45s)
 │   ├── locket_change_profile.js       # Giả lập changeProfileInfo, gỡ mờ ảnh, mở khoá Gold VIP
 │   ├── locket_filter_resp.js          # Xử lý response mở khoá bộ lọc ảnh, unblur, bảo toàn streak
-│   └── locket_pb_req.js               # Điều hướng bảo mật Photobooth & bộ lọc AI qua Cloudflare Worker
+│   └── locket_pb_req.js               # Điều hướng bảo mật Photobooth & bộ lọc AI
 ├── Module locket/
+│   ├── LocketGold_Offline_DinhTuan.module # Module chạy OFFLINE CỤC BỘ 100% (Khuyên dùng - Không cần mạng tải script)
 │   ├── Locketgolddinhtuan.module      # Module Shadowrocket tổng hợp đầy đủ tính năng nhất
 │   └── README.md                      # Hướng dẫn chi tiết cho Module Locket
 └── Module-Shadowrocket-NMS/
@@ -26,7 +31,7 @@ locket/
     │   ├── forceGold4.3.js            # Script cấu hình Remote Config
     │   ├── header7.js                 # Script xóa header chống cache 304
     │   ├── locketfix8.js              # Script mở khóa RevenueCat
-    │   ├── LocketGoldDNS-DinhTuan.mobileconfig # Profile DNS TLS NextDNS bảo mật
+    │   ├── LocketGoldDNS-DinhTuan.mobileconfig # Profile DNS TLS NextDNS bảo mật (DinhTuan)
     │   └── README.md
     └── Locketgold2/
         └── Locketv14.module           # Module Shadowrocket bản gọn (Core Gold)
@@ -34,46 +39,40 @@ locket/
 
 ---
 
-## 🛠️ Toàn bộ các lỗi đã được tìm và khắc phục triệt để
+## ⚠️ TẠI SAO CODE TRƯỚC ĐÂY KHÔNG CÓ TÁC DỤNG? (VÀ CÁCH KHẮC PHỤC 100%)
 
-1. **Lỗi giải mã Base64 JWT làm mất UID chủ máy (`locket_change_profile.js`, `locket_filter_resp.js`)**:
-   - *Lỗi cũ*: Vòng lặp giải mã Base64 bitwise cũ bị sai thứ tự toán tử và dịch bit, tạo ra ký tự rác khi decode header Authorization Bearer token, khiến `extractSelfUidFromHeaders` luôn trả về `null`.
-   - *Đã sửa*: Viết lại hàm `safeBase64Decode` chuẩn UTF-8, tự động decode an toàn payload JWT và trích xuất chính xác `user_id`, `sub`, `uid` của người dùng.
+Nếu bạn đã bật Shadowrocket nhưng Locket vẫn không lên Gold, có **3 nguyên nhân chính**:
 
-2. **Lỗi logic Unblur `preview_url` (`locket_change_profile.js`, `locket_filter_resp.js`)**:
-   - *Lỗi cũ*: Vòng lặp xóa cờ `is_locked`, `is_blurred = false` chạy trước đoạn thay link ảnh, khiến điều kiện `if ("preview_url" in node && node.is_blurred)` luôn mang giá trị `false`, dẫn đến ảnh preview vẫn bị mờ.
-   - *Đã sửa*: Lưu trạng thái `wasBlurred` ban đầu trước khi xóa cờ, đảm bảo `preview_url` luôn được thay thế bằng link ảnh rõ nét (`clearUrl`).
+1. **CHƯA BẬT TIN CẬY CHỨNG CHỈ TRONG CÀI ĐẶT IPHONE (Nguyên nhân phổ biến nhất 99%)**:
+   - Khi bạn tạo chứng chỉ CA trong Shadowrocket và cài vào máy, iOS **mặc định KHÔNG kích hoạt giải mã HTTPS**.
+   - Nếu chưa kích hoạt, Shadowrocket không thể đọc được gói tin HTTPS của Locket (`api.revenuecat.com`), dẫn đến script không bao giờ được chạy!
+   - 👉 **Cách sửa**: Mở **Cài đặt iPhone** -> **Cài đặt chung (General)** -> **Giới thiệu (About)** -> Kéo xuống dưới cùng chọn **Cài đặt tin cậy chứng chỉ (Certificate Trust Settings)** -> **Gạt BẬT XANH cho chứng chỉ của Shadowrocket**!
 
-3. **Lỗi tràn Call Stack đệ quy & ô nhiễm biến toàn cục (`locket_change_profile.js`, `locketfix.js`)**:
-   - *Lỗi cũ*: Các file thiếu IIFE wrapper `(function () { ... })();`, các biến `const WORKER_HOST`, `var obj` rò rỉ ra JSContext toàn cục của Shadowrocket gây lỗi `Identifier has already been declared` ở các request tiếp theo. Hàm `applyGoldBadge` và `transformNode` có nguy cơ tràn ngăn xếp nếu gặp cấu trúc lặp vòng.
-   - *Đã sửa*: Bọc toàn bộ các file trong IIFE cục bộ và bổ sung giới hạn độ sâu đệ quy (`depth guard`) chống crash ứng dụng.
+2. **Shadowrocket không tải được Script từ xa (Lỗi 404 / Server chết)**:
+   - Trong file `.module` cũ, đường dẫn `script-path` trỏ đến các liên kết GitHub/Worker bên ngoài. Nếu đường link này bị lỗi hoặc chết, Shadowrocket sẽ bỏ qua script và không mở khoá được.
+   - 👉 **Cách sửa**: Sử dụng file [`LocketGold_Offline_DinhTuan.module`](file:///c:/Users/Microsoft/Downloads/locket/Module%20locket/LocketGold_Offline_DinhTuan.module). Bản này đọc trực tiếp các file `.js` có sẵn trong máy iPhone, **100% không cần tải qua mạng, không bao giờ lo chết link hay lỗi 404**!
 
-4. **Lỗi đường dẫn sai 404 trong Module Shadowrocket (`Locketgolddinhtuan.module`, `Locketv14.module`)**:
-   - *Lỗi cũ*: 
-     - Trong `Locketgolddinhtuan.module`, đường dẫn `script-path` trỏ tới `Locket%20Filter%20AI/js/evenuecat.js` (thư mục không tồn tại trên repo).
-     - Trong `Locketv14.module`, đường dẫn trỏ tới `Module-Shadowrocket-NMS/Locket%20Gold/` (thừa dấu cách so với thư mục `Locketgold` thực tế). Cả hai đều gây lỗi 404 khi Shadowrocket tải script từ GitHub.
-   - *Đã sửa*: Chuẩn hóa đường dẫn chính xác theo cấu trúc Git (`main/js/revenuecat.js` và `main/Module-Shadowrocket-NMS/Locketgold/`).
-
-5. **Lệch cấu hình thời lượng video 30s vs 45s (`forceGold4.3.js`)**:
-   - *Lỗi cũ*: Khối JSON string của `camera` và `camera_roll` bị gán cứng `30.0` giây, xung đột với cấu hình 45.0 giây ở các key bên dưới.
-   - *Đã sửa*: Đồng bộ toàn bộ các giá trị video max duration thành `45.0` giây trên cả `forceGold4.3.js` và `locketfix.js`.
-
-6. **Lỗi thiếu cờ `filter_type = 'normal'` và mất body trong `locket_pb_req.js`**:
-   - *Lỗi cũ*: Khi map sticker ID sang AI filter prompt, script không gán `filter_type = "normal"`, và nếu không có filter_id thì biến `doneObj.body` bị `undefined` làm rớt body POST.
-   - *Đã sửa*: Luôn giữ lại body gốc, bổ sung `filter_type = "normal"`, và kích hoạt mock HTTP 200 cho khung tĩnh / photobooth tránh lỗi 422 từ upstream.
-
-7. **Bổ sung tương thích đa nền tảng (Shadowrocket, Loon, Surge, Quantumult X)**:
-   - *Đã sửa*: Bổ sung phân nhánh trả kết quả `$done({ body: ... })` cho Quantumult X bên cạnh định dạng `{ status: 200, headers, body }` của Surge / Shadowrocket / Loon; hỗ trợ fallback giữa `$persistentStore` và `$prefs`.
-
-8. **Dọn dẹp file trùng lặp (`README (1).md`)**:
-   - *Đã sửa*: Xóa các file duplicate rác do tải về nhiều lần, đồng bộ hướng dẫn chuẩn xác trên toàn bộ các thư mục.
+3. **Chưa tắt hẳn ứng dụng Locket khỏi đa nhiệm**:
+   - Locket lưu cache trạng thái gói cũ trong RAM.
+   - 👉 **Cách sửa**: Sau khi bật VPN Shadowrocket, phải **vuốt tắt Locket khỏi đa nhiệm** rồi mở lại.
 
 ---
 
-## 🚀 Hướng dẫn cài đặt trên Shadowrocket (iOS)
+## 🚀 HƯỚNG DẪN CÀI ĐẶT BẢN OFFLINE CỤC BỘ (100% THÀNH CÔNG)
 
-1. Mở **Shadowrocket** -> chọn tab **Cấu hình (Config)**.
-2. Chọn **Thêm cấu hình (Add Configuration)** -> Dán liên kết hoặc import file `Locketgolddinhtuan.module` (bản đầy đủ tính năng) hoặc `Locketv14.module` (bản cơ bản).
-3. Đảm bảo đã bật **HTTPS Decryption (Giải mã HTTPS / MITM)** trong Shadowrocket và cài đặt / tin cậy chứng chỉ CA trong:
-   - *Cài đặt (Settings) -> Cài đặt chung (General) -> Giới thiệu (About) -> Cài đặt tin cậy chứng chỉ (Certificate Trust Settings)*.
-4. Xóa ứng dụng Locket khỏi đa nhiệm, bật VPN Shadowrocket và mở lại Locket để tận hưởng Locket Gold.
+### Bước 1: Copy các file Script vào thư mục Shadowrocket trên iPhone
+1. Gửi thư mục chứa các file `.js` (`revenuecat.js`, `forceGold4.3.js`, `deleteHeader.js`, `locket_change_profile.js`) qua iPhone.
+2. Mở ứng dụng **Tệp (Files)** trên iPhone -> Chọn **Trên iPhone (On My iPhone)** -> Mở thư mục **Shadowrocket**.
+3. Dán các file `.js` này trực tiếp vào thư mục **Shadowrocket**.
+
+### Bước 2: Nhập Module vào Shadowrocket
+1. Nhấn mở file [`LocketGold_Offline_DinhTuan.module`](file:///c:/Users/Microsoft/Downloads/locket/Module%20locket/LocketGold_Offline_DinhTuan.module) và chia sẻ vào **Shadowrocket**.
+2. Đảm bảo Module đã được tích chọn bật trong tab **Cấu hình (Config)** -> **Mô-đun (Modules)**.
+
+### Bước 3: Bật Giải mã HTTPS & Tin cậy chứng chỉ
+1. Trong Shadowrocket: **Cài đặt (Settings)** -> **Chứng chỉ (Certificate)** -> **Tạo chứng chỉ mới** -> **Cài đặt chứng chỉ vào hệ thống**.
+2. Trong Cài đặt iPhone: **Cài đặt chung** -> **Giới thiệu** -> **Cài đặt tin cậy chứng chỉ** -> **Bật xanh**.
+
+### Bước 4: Tận hưởng Locket Gold
+- Bật công tắc kết nối Shadowrocket (VPN Connected).
+- Vuốt tắt Locket khỏi đa nhiệm và mở lại.

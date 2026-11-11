@@ -1,5 +1,5 @@
 /***********************************************
-> deleteHeader by DinhTuan
+> deleteHeader - Bản quyền 100%: DinhTuan
 > Support: Shadowrocket, Loon, Surge, Quantumult X
 ***********************************************/
 

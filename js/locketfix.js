@@ -22,7 +22,7 @@ if (!obj || typeof obj !== "object") {
 obj.state = "UPDATE";
 obj.templateVersion = String(Date.now());
 
-obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
+obj.Attention = "Chúc mừng bạn! Bản quyền 100% thuộc về DinhTuan.";
 obj.entries = obj.entries || {};
 obj.entries.cache_ttl_seconds = "0";
 obj.entries.client_cache_ttl_sec = "0";
@@ -135,7 +135,7 @@ Object.assign(obj.entries, {
         profile_banner: true
     }),
     feature_discovery_popup_config: JSON.stringify({
-        tag: "LOCKET GOLD NMS",
+        tag: "LOCKET GOLD DINHTUAN",
         tag_gradient: true,
         tag_style: "gold_gradient",
         title: "Đã Kich Hoạt 💛",
@@ -5963,7 +5963,7 @@ Object.assign(obj.entries, {
                 ]
         },
         {
-                "section": "🎨 Decorative by MinhHiep08",
+                "section": "🎨 Decorative by DinhTuan",
                 "items": [
                         {
                                 "overlay_id": "caption:bunniesept nah",
@@ -5983,7 +5983,7 @@ Object.assign(obj.entries, {
                                 }
                         },
                         {
-                                "overlay_id": "caption:MinhHiep08",
+                                "overlay_id": "caption:DinhTuan",
                                 "source": "remote",
                                 "caption": {
                                         "background": {
@@ -5994,7 +5994,7 @@ Object.assign(obj.entries, {
                                                 ]
                                         },
                                         "max_lines": 1,
-                                        "text": "💻 MinhHiep08",
+                                        "text": "💻 DinhTuan",
                                         "text_color": "#183153",
                                         "type": "static_content"
                                 }

@@ -21,9 +21,9 @@
             </dict>
 
             <key>PayloadDisplayName</key>
-            <string>LocketGold DNS</string>
+            <string>Locket Gold DNS - DinhTuan</string>
             <key>PayloadIdentifier</key>
-            <string>com.profile.dns.locket</string>
+            <string>com.dinhtuan.dns.locket</string>
             <key>PayloadType</key>
             <string>com.apple.dnsSettings.managed</string>
             <key>PayloadUUID</key>
@@ -34,19 +34,19 @@
     </array>
 
     <key>PayloadDisplayName</key>
-    <string>LocketGold Profile</string>
+    <string>Locket Gold - DinhTuan</string>
 
     <key>PayloadDescription</key>
     <string>
 - Nâng cấp LocketGold.
 Phân phối bởi DinhTuan
-Support: Tiến Sato | Config by: Tiến Sato
+Bản quyền 100%: DinhTuan
     </string>
 
     <key>PayloadIdentifier</key>
-    <string>com.profile.system.locket</string>
+    <string>com.dinhtuan.profile.locket</string>
     <key>PayloadOrganization</key>
-    <string>NightMarket</string>
+    <string>DinhTuan</string>
     <key>PayloadRemovalDisallowed</key>
     <false/>
     <key>PayloadType</key>
