@@ -1,0 +1,55 @@
+#!name=Locket Gold & Filter VIP - DinhTuan
+#!desc=Mở khoá Locket Gold, gỡ mờ ảnh, Photobooth & AI Filters - Bản quyền DinhTuan
+#!author=DinhTuan
+#!icon=https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Locket.png
+#!date=2026-11-11
+
+[Rule]
+AND,((DOMAIN,firebaseremoteconfig.googleapis.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,api.revenuecat.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,api.locketcamera.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN-SUFFIX,locketcamera.com),(PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,us-central1-locket-4252a.cloudfunctions.net),(PROTOCOL,UDP)),REJECT
+
+[Host]
+firebaseremoteconfigrealtime.googleapis.com = 0.0.0.0
+
+[Header Rewrite]
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del x-revenuecat-etag
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del X-RevenueCat-ETag
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del if-none-match
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del If-None-Match
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del if-modified-since
+^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) header-del If-Modified-Since
+
+^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ header-del if-none-match
+^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ header-del If-None-Match
+^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ header-del if-modified-since
+^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ header-del If-Modified-Since
+^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ header-del x-goog-if-none-match
+
+^https?:\/\/api\.locketcamera\.com\/.+ header-del if-none-match
+^https?:\/\/api\.locketcamera\.com\/.+ header-del If-None-Match
+^https?:\/\/api\.locketcamera\.com\/.+ header-del if-modified-since
+^https?:\/\/api\.locketcamera\.com\/.+ header-del If-Modified-Since
+
+[Script]
+# Xóa cache 304
+http-request ^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/deleteHeader.js, tag=deleteHeader_RC
+http-request ^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/deleteHeader.js, tag=deleteHeader_Firebase
+
+# RevenueCat Gold
+http-response ^https?:\/\/api\.revenuecat\.com\/.+\/(receipts|subscribers) script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/revenuecat.js, requires-body=true, max-size=-1, tag=revenuecat
+
+# Remote Config Firebase
+http-response ^https?:\/\/firebaseremoteconfig\.googleapis\.com\/.+ script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/forceGold4.3.js, requires-body=true, max-size=-1, tag=locket_rc
+
+# Profile & Filter
+http-request ^https?:\/\/api\.locketcamera\.com\/changeProfileInfo script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/locket_change_profile.js, tag=locket_change_profile
+http-response ^https?:\/\/api\.locketcamera\.com\/.+ script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/locket_change_profile.js, requires-body=true, max-size=2097152, tag=locket_filter_resp
+
+# Photobooth & AI Filter
+http-request ^https?:\/\/(us-central1-locket-4252a\.cloudfunctions\.net|api\.locketcamera\.com)\/generateFilteredImage script-path=https://raw.githubusercontent.com/DinhTuan/locket/main/js/locket_pb_req.js, requires-body=true, max-size=-1, tag=locket_pb_req
+
+[Mitm]
+hostname = api.revenuecat.com, firebaseremoteconfig.googleapis.com, api.locketcamera.com, *.locketcamera.com, us-central1-locket-4252a.cloudfunctions.net
