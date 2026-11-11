@@ -1,8 +1,26 @@
 /***********************************************
 > deleteHeader by DinhTuan
+> Support: Shadowrocket, Loon, Surge, Quantumult X
 ***********************************************/
 
-const version = 'V1.0.2';
+(function () {
+  const headersToStrip = [
+    'x-revenuecat-etag',
+    'if-none-match',
+    'if-modified-since',
+    'x-goog-if-none-match',
+    'etag'
+  ];
 
-
-function setHeaderValue(e,a,d){var r=a.toLowerCase();r in e?e[r]=d:e[a]=d}var modifiedHeaders=$request.headers;setHeaderValue(modifiedHeaders,"X-RevenueCat-ETag",""),$done({headers:modifiedHeaders});
+  if (typeof $request !== "undefined" && $request && $request.headers) {
+    let modifiedHeaders = Object.assign({}, $request.headers);
+    for (let key of Object.keys(modifiedHeaders)) {
+      if (headersToStrip.includes(key.trim().toLowerCase())) {
+        delete modifiedHeaders[key];
+      }
+    }
+    $done({ headers: modifiedHeaders });
+  } else {
+    $done({});
+  }
+})();

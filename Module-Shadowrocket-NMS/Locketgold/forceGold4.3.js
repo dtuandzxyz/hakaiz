@@ -2,10 +2,22 @@
 // Locket Remote Config Rewrite
 // Endpoint: firebaseremoteconfig.googleapis.com
 
-var ua = $request.headers["User-Agent"] || $request.headers["user-agent"] || "";
-var obj = JSON.parse($response.body);
+(function () {
+    var obj = {};
+    try {
+        if (typeof $response !== "undefined" && $response && $response.body) {
+            obj = JSON.parse($response.body);
+        }
+    } catch (e) {
+        obj = {};
+    }
 
-if (ua.includes("Locket")) {
+    if (!obj || typeof obj !== "object") {
+        obj = {};
+    }
+
+    obj.state = "UPDATE";
+    obj.templateVersion = String(Date.now());
     obj.Attention = "Chúc mừng bạn! Vui lòng không bán hoặc chia sẻ cho người khác!";
     obj.entries = obj.entries || {};
 
@@ -94,10 +106,10 @@ if (ua.includes("Locket")) {
     // ============================================================
     Object.assign(obj.entries, {
         camera: JSON.stringify({
-            gold_max_duration: 30.0,
-            goldMaxDuration: 30.0,
-            max_duration: 30.0,
-            maxDuration: 30.0,
+            gold_max_duration: 45.0,
+            goldMaxDuration: 45.0,
+            max_duration: 45.0,
+            maxDuration: 45.0,
             ultra_wide: true,
             ultraWide: true,
             volume_button: true,
@@ -110,15 +122,15 @@ if (ua.includes("Locket")) {
             qualityMbps: 0.9
         }),
         camera_roll: JSON.stringify({
-            gold_max_duration: 30.0,
-            goldMaxDuration: 30.0,
-            video_max_duration: 30.0,
-            videoMaxDuration: 30.0,
-            max_duration: 30.0,
-            maxDuration: 30.0,
-            trim_max_duration: 30.0,
-            trimMaxDuration: 30.0,
-            camera_roll_max_duration: 30.0,
+            gold_max_duration: 45.0,
+            goldMaxDuration: 45.0,
+            video_max_duration: 45.0,
+            videoMaxDuration: 45.0,
+            max_duration: 45.0,
+            maxDuration: 45.0,
+            trim_max_duration: 45.0,
+            trimMaxDuration: 45.0,
+            camera_roll_max_duration: 45.0,
             quality_mbps: 0.9,
             qualityMbps: 0.9,
             flash_button: true
@@ -157,15 +169,15 @@ if (ua.includes("Locket")) {
         camera_roll_video_upload_enabled: "true",
         internal_camera_roll_video_upload_enabled: "true",
         longer_camera_roll_videos_enabled: "true",
-        camera_roll_video_max_duration: "30.0",
-        camera_roll_max_duration: "30.0",
-        camera_roll_duration: "30.0",
-        max_video_duration: "30.0",
-        video_max_duration: "30.0",
-        video_trim_max_duration: "30.0",
-        trim_max_duration: "30.0",
-        gold_max_duration: "30.0",
-        goldMaxDuration: "30.0",
+        camera_roll_video_max_duration: "45.0",
+        camera_roll_max_duration: "45.0",
+        camera_roll_duration: "45.0",
+        max_video_duration: "45.0",
+        video_max_duration: "45.0",
+        video_trim_max_duration: "45.0",
+        trim_max_duration: "45.0",
+        gold_max_duration: "45.0",
+        goldMaxDuration: "45.0",
         video_quality_mbps: "0.9",
         video_sound_enabled: "true",
         microphone_enabled: "true",
@@ -640,6 +652,51 @@ if (ua.includes("Locket")) {
             }
         ])
     });
-}
 
-$done({ body: JSON.stringify(obj) });
+    var durationKeys = [
+        "max_video_duration", "video_max_duration", "camera_roll_max_duration",
+        "camera_roll_video_max_duration", "camera_roll_duration",
+        "video_trim_max_duration", "trim_max_duration", "gold_max_duration", "goldMaxDuration"
+    ];
+    for (var i = 0; i < durationKeys.length; i++) {
+        obj.entries[durationKeys[i]] = "45.0";
+    }
+    obj.entries["is_gold"] = "true";
+    obj.entries["has_gold"] = "true";
+    obj.entries["is_gold_user"] = "true";
+    obj.entries["user_is_gold"] = "true";
+    obj.entries["gold_user"] = "true";
+    obj.entries["gold_active"] = "true";
+    obj.entries["all_filters_free"] = "true";
+    obj.entries["unlocked_filters"] = "true";
+    obj.entries["free_filters_enabled"] = "true";
+    obj.entries["filter_selection_enabled"] = "true";
+    obj.entries["require_gold_for_filters"] = "false";
+    obj.entries["requires_gold_for_filters"] = "false";
+    obj.entries["cache_ttl_seconds"] = "0";
+    obj.entries["client_cache_ttl_sec"] = "0";
+
+    var respHeaders = (typeof $response !== "undefined" && $response && $response.headers) ? Object.assign({}, $response.headers) : {};
+    delete respHeaders["Content-Encoding"];
+    delete respHeaders["content-encoding"];
+    delete respHeaders["Content-Length"];
+    delete respHeaders["content-length"];
+    delete respHeaders["Transfer-Encoding"];
+    delete respHeaders["transfer-encoding"];
+    delete respHeaders["if-none-match"];
+    delete respHeaders["If-None-Match"];
+    delete respHeaders["etag"];
+    delete respHeaders["ETag"];
+    respHeaders["content-type"] = "application/json; charset=utf-8";
+
+    var finalBody = JSON.stringify(obj);
+    if (typeof $task !== "undefined") {
+        $done({ body: finalBody });
+    } else {
+        $done({
+            status: 200,
+            headers: respHeaders,
+            body: finalBody
+        });
+    }
+})();

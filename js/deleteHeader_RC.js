@@ -1,23 +1,26 @@
 /***********************************************
 > deleteHeader by DinhTuan
+> Support: Shadowrocket, Loon, Surge, Quantumult X
 ***********************************************/
 
-const version = 'V2.0.0';
+(function () {
+  const headersToStrip = [
+    'x-revenuecat-etag',
+    'if-none-match',
+    'if-modified-since',
+    'x-goog-if-none-match',
+    'etag'
+  ];
 
-const headersToStrip = [
-  'x-revenuecat-etag',
-  'if-none-match',
-  'if-modified-since',
-  'x-goog-if-none-match'
-];
-
-let modifiedHeaders = (typeof $request !== "undefined" && $request && $request.headers) ? Object.assign({}, $request.headers) : {};
-
-for (let key of Object.keys(modifiedHeaders)) {
-  if (headersToStrip.includes(key.toLowerCase())) {
-    modifiedHeaders[key] = "";
-    delete modifiedHeaders[key];
+  if (typeof $request !== "undefined" && $request && $request.headers) {
+    let modifiedHeaders = Object.assign({}, $request.headers);
+    for (let key of Object.keys(modifiedHeaders)) {
+      if (headersToStrip.includes(key.trim().toLowerCase())) {
+        delete modifiedHeaders[key];
+      }
+    }
+    $done({ headers: modifiedHeaders });
+  } else {
+    $done({});
   }
-}
-
-$done({ headers: modifiedHeaders });
+})();

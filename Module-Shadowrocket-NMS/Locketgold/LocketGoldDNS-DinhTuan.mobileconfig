@@ -13,6 +13,8 @@
                 <array>
                     <string>45.90.28.0</string>
                     <string>45.90.30.0</string>
+                    <string>2a07:a8c0::</string>
+                    <string>2a07:a8c1::</string>
                 </array>
                 <key>ServerName</key>
                 <string>bb475f.dns.nextdns.io</string>

@@ -5,13 +5,15 @@
 // Locket Gold & Remote Config Unlocker VIP (Updated: Removed Certification Captions)
 // ============================================================
 
-var ua = (typeof $request !== "undefined" && $request && $request.headers) ? ($request.headers["User-Agent"] || $request.headers["user-agent"] || "") : "";
-var obj = {};
-try {
-    obj = JSON.parse($response.body);
-} catch (e) {
-    obj = {};
-}
+(function () {
+    var obj = {};
+    try {
+        if (typeof $response !== "undefined" && $response && $response.body) {
+            obj = JSON.parse($response.body);
+        }
+    } catch (e) {
+        obj = {};
+    }
 
 if (!obj || typeof obj !== "object") {
     obj = {};
@@ -8349,6 +8351,27 @@ function hamVaForceOverride(entries) {
 }
 hamVaForceOverride(obj.entries);
 
-$done({
-    body: JSON.stringify(obj)
-});
+var respHeaders = (typeof $response !== "undefined" && $response && $response.headers) ? Object.assign({}, $response.headers) : {};
+delete respHeaders["Content-Encoding"];
+delete respHeaders["content-encoding"];
+delete respHeaders["Content-Length"];
+delete respHeaders["content-length"];
+delete respHeaders["Transfer-Encoding"];
+delete respHeaders["transfer-encoding"];
+delete respHeaders["if-none-match"];
+delete respHeaders["If-None-Match"];
+delete respHeaders["etag"];
+delete respHeaders["ETag"];
+respHeaders["content-type"] = "application/json; charset=utf-8";
+
+var finalBody = JSON.stringify(obj);
+if (typeof $task !== "undefined") {
+    $done({ body: finalBody });
+} else {
+    $done({
+        status: 200,
+        headers: respHeaders,
+        body: finalBody
+    });
+}
+})();

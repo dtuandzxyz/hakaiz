@@ -307,16 +307,47 @@
 
             // Chuyển hướng đích đến trực tiếp sang Worker bảo mật (giấu kín tuyệt đối 100% domain Render)
             // Tuyệt đối không để kết nối gốc rò rỉ lên máy chủ Locket chính chủ tránh lỗi "Không thể áp dụng bộ lọc"
-            const targetUrl = "https://locket-vip.mhiep20077.workers.dev/generateFilteredImage?module=Locket_YouTube";
+            const targetUrl = "https://locket-vip.mhiep20077.workers.dev/generateFilteredImage?module=Locket_Gold_DinhTuan";
             let headers = Object.assign({}, ($request && $request.headers) || {});
             headers["Host"] = "locket-vip.mhiep20077.workers.dev";
             headers["host"] = "locket-vip.mhiep20077.workers.dev";
-            headers["X-Module-Origin"] = "Locket_YouTube";
+            headers["X-Module-Origin"] = "Locket_Gold_DinhTuan";
+            delete headers["content-length"];
+            delete headers["Content-Length"];
 
-            return $done({
+            let doneObj = {
                 url: targetUrl,
-                headers: headers
-            });
+                headers: headers,
+                body: ($request && $request.body) || ""
+            };
+
+            let bodyStr = $request.body;
+            if (bodyStr && typeof bodyStr === "string") {
+                try {
+                    let reqData = JSON.parse(bodyStr);
+                    let fid = reqData.filter_id || reqData.filterId || reqData.id || "";
+                    if (fid) {
+                        if (isOverlayFrameFilter(fid)) {
+                            // Khung tĩnh / Photobooth: Mock phản hồi 200 ngay tại request để tránh lỗi 422 từ upstream
+                            const imgUrl = reqData.input_url || reqData.imageUrl || reqData.image_url || reqData.url || "";
+                            return $done({ response: buildMock200Response(imgUrl) });
+                        }
+                        if (STICKER_ID_MAP[fid]) {
+                            reqData.filter_id = STICKER_ID_MAP[fid];
+                            fid = reqData.filter_id;
+                            if (!reqData.filter_type && !reqData.filterType) {
+                                reqData.filter_type = "normal";
+                            }
+                        }
+                        if (AI_PROMPTS[fid] && !reqData.prompt) {
+                            reqData.prompt = AI_PROMPTS[fid];
+                        }
+                        doneObj.body = JSON.stringify(reqData);
+                    }
+                } catch (e) {}
+            }
+
+            return $done(doneObj);
         } catch (e) {
             return $done({});
         }
@@ -341,14 +372,26 @@
                 delete resObj.result.errors;
             }
 
-            return $done({
-                status: 200,
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Access-Control-Allow-Origin": "*"
-                },
-                body: JSON.stringify(resObj)
-            });
+            let respHeaders = Object.assign({}, ($response && $response.headers) || {});
+            delete respHeaders["Content-Encoding"];
+            delete respHeaders["content-encoding"];
+            delete respHeaders["Content-Length"];
+            delete respHeaders["content-length"];
+            delete respHeaders["Transfer-Encoding"];
+            delete respHeaders["transfer-encoding"];
+            respHeaders["content-type"] = "application/json; charset=utf-8";
+            respHeaders["access-control-allow-origin"] = "*";
+
+            const respBody = JSON.stringify(resObj);
+            if (typeof $task !== "undefined") {
+                return $done({ body: respBody });
+            } else {
+                return $done({
+                    status: 200,
+                    headers: respHeaders,
+                    body: respBody
+                });
+            }
         }
     } catch (e) {}
 
